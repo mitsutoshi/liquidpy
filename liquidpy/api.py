@@ -26,7 +26,10 @@ class Liquid(object):
             raise ValueError('api_key and api_secret are required.')
         self.api_key = api_key
         self.api_secret = api_secret
-        self.session = requests.Session()
+        self.s = requests.Session()
+
+    def __del__(self):
+        self.s.close()
 
     def _create_auth_headers(self, path: str) -> dict:
         '''
@@ -55,28 +58,28 @@ class Liquid(object):
 
     def get_products(self, product_id: int = 0) -> Dict[str, Any]:
         path = '/products' + (f'/{product_id}' if product_id else '')
-        res = requests.get(BASE_URL + path)
+        res = self.s.get(BASE_URL + path)
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
     def get_accounts_balance(self) -> Dict[str, Any]:
         path = '/accounts/balance'
-        res = requests.get(BASE_URL + path, headers=self._create_auth_headers(path))
+        res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
     def get_orders(self, status: str = None):
         path = '/orders' + (f'?status={status}' if status else "")
-        res = requests.get(BASE_URL + path, headers=self._create_auth_headers(path))
+        res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)['models']
 
     def cancel_order(id: str) -> None:
         path = f"/orders/{o['id']}/cancel"
-        res = requests.put(BASE_URL + path, headers=self._create_auth_headers(path))
+        res = self.s.put(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
 
@@ -91,7 +94,7 @@ class Liquid(object):
                     }
                 }
         headers = self._create_auth_headers('/orders/')
-        res = requests.post(
+        res = self.s.post(
                 BASE_URL + '/orders/', data=json.dumps(data), headers=headers)
         if not res.ok:
             print(f'Failed to create an order. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
