@@ -18,7 +18,6 @@ setup(
     author="mitsutoshi",
     url=f"https://github.com/mitsutoshi/liquidpy",
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
-    package_dir={"": "liquidpy"},
     py_modules=[splitext(basename(path))[0] for path in glob('liquidpy/*.py')],
     include_package_data=True,
     zip_safe=False,
