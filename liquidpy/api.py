@@ -27,9 +27,9 @@ class Liquid(object):
         self.api_key = api_key
         self.api_secret = api_secret
 
-    def __create_auth_headers(self, path: str) -> dict:
+    def _create_auth_headers(self, path: str) -> dict:
         '''
-        __create_auth_headers creates authentication header to call private API
+        _create_auth_headers creates authentication header to call private API
 
         Parameters
         ----------
@@ -66,21 +66,21 @@ class Liquid(object):
 
     def get_accounts_balance(self) -> Dict[str, Any]:
         path = '/accounts/balance'
-        res = requests.get(BASE_URL + path, headers=self.__create_auth_headers(path))
+        res = requests.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
     def get_orders(self, status: str = None):
         path = '/orders' + (f'?status={status}' if status else "")
-        res = requests.get(BASE_URL + path, headers=self.__create_auth_headers(path))
+        res = requests.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)['models']
 
     def cancel_order(id: str) -> None:
         path = f"/orders/{o['id']}/cancel"
-        res = requests.put(BASE_URL + path, headers=self.__create_auth_headers(path))
+        res = requests.put(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
 
@@ -94,7 +94,7 @@ class Liquid(object):
                     'quantity': quantity
                     }
                 }
-        headers = self.__create_auth_headers('/orders/')
+        headers = self._create_auth_headers('/orders/')
         res = requests.post(
                 BASE_URL + '/orders/', data=json.dumps(data), headers=headers)
         if not res.ok:
