@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 import freezegun
 import jwt
-from liquidpy.api import Liquid, PRODUCT_ID_BTCJPY
+from liquidpy.api import *
 
 
 class TestApi(unittest.TestCase):
@@ -34,9 +34,29 @@ class TestApi(unittest.TestCase):
         for p in res:
             self.assertTrue('id' in p)
 
-    def test_get_product(self):
+    def test_get_product_BTCJPY(self):
         res = self.api.get_products(product_id=PRODUCT_ID_BTCJPY)
         self.assertTrue(type(res) == dict)
         self.assertTrue('id' in res)
         self.assertEqual(int(res['id']), PRODUCT_ID_BTCJPY)
+        self.assertEqual(res['currency_pair_code'], 'BTCJPY')
+
+    def test_get_product_ETHJPY(self):
+        self.__test_get_product(PRODUCT_ID_ETHJPY, 'ETHJPY')
+
+    def test_get_product_XRPJPY(self):
+        self.__test_get_product(PRODUCT_ID_XRPJPY, 'XRPJPY')
+
+    def test_get_product_BCHJPY(self):
+        self.__test_get_product(PRODUCT_ID_BCHJPY, 'BCHJPY')
+
+    def test_get_product_QASHJPY(self):
+        self.__test_get_product(PRODUCT_ID_QASHJPY, 'QASHJPY')
+
+    def __test_get_product(self, product_id, currency_pair_code):
+        res = self.api.get_products(product_id=product_id)
+        self.assertTrue(type(res) == dict)
+        self.assertTrue('id' in res)
+        self.assertEqual(int(res['id']), product_id)
+        self.assertEqual(res['currency_pair_code'], currency_pair_code)
 

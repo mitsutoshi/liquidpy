@@ -19,6 +19,22 @@ PRODUCT_ID_BTCJPY: int = 5
 """Product ID: BTC/JPY"""
 
 
+PRODUCT_ID_ETHJPY: int = 29
+"""Product ID: ETH/JPY"""
+
+
+PRODUCT_ID_XRPJPY: int = 83
+"""Product ID: XRP/JPY"""
+
+
+PRODUCT_ID_BCHJPY: int = 41
+"""Product ID: BCH/JPY"""
+
+
+PRODUCT_ID_QASHJPY: int = 50
+"""Product ID: QASH/JPY"""
+
+
 class Liquid(object):
 
     def __init__(self, api_key: str, api_secret: str):
