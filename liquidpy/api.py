@@ -35,11 +35,17 @@ PRODUCT_ID_QASHJPY: int = 50
 """Product ID: QASH/JPY"""
 
 
+def privateapi(func):
+    def wrapper(self, *args, **kwargs):
+        if not self.api_key or not self.api_secret:
+            raise ValueError('api_key and api_secret are required.')
+        return func(self, *args, **kwargs)
+    return wrapper
+
+
 class Liquid(object):
 
-    def __init__(self, api_key: str, api_secret: str):
-        if not api_key or not api_secret:
-            raise ValueError('api_key and api_secret are required.')
+    def __init__(self, api_key: str = None, api_secret: str = None):
         self.api_key = api_key
         self.api_secret = api_secret
         self.s = requests.Session()
@@ -79,6 +85,7 @@ class Liquid(object):
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
+    @privateapi
     def get_accounts_balance(self) -> Dict[str, Any]:
         path = '/accounts/balance'
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
@@ -86,6 +93,7 @@ class Liquid(object):
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
+    @privateapi
     def get_orders(self, status: str = None):
         path = '/orders' + (f'?status={status}' if status else "")
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
@@ -93,12 +101,14 @@ class Liquid(object):
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)['models']
 
+    @privateapi
     def cancel_order(id: str) -> None:
         path = f"/orders/{o['id']}/cancel"
         res = self.s.put(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
 
+    @privateapi
     def create_order(self, product_id: int, side: str, price: int, quantity: float):
         data = {
                 'order': {
@@ -116,3 +126,4 @@ class Liquid(object):
             print(f'Failed to create an order. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
             raise HTTPError(f'status: {res.status_code}: text: {res.text}')
         print(f'Order has been created. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
+

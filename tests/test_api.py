@@ -1,4 +1,5 @@
 import unittest
+import os
 from datetime import datetime
 import freezegun
 import jwt
@@ -8,8 +9,8 @@ from liquidpy.api import *
 class TestApi(unittest.TestCase):
 
     def setUp(self):
-        self.api_key = 'dummy_key'
-        self.api_secret = 'dummy_secret'
+        self.api_key = os.environ.get('API_KEY', '')
+        self.api_secret = os.environ.get('API_SECRET', '')
         self.api = Liquid(api_key=self.api_key, api_secret=self.api_secret)
 
     @freezegun.freeze_time('2015-10-21 12:34:56')
@@ -60,3 +61,33 @@ class TestApi(unittest.TestCase):
         self.assertEqual(int(res['id']), product_id)
         self.assertEqual(res['currency_pair_code'], currency_pair_code)
 
+    def test_get_accounts_balance_autherr(self):
+        api = Liquid()
+        try:
+            api.get_accounts_balance()
+        except Exception as e:
+            self.assertEqual(type(e), ValueError)
+
+    def test_get_orders_autherr(self):
+        api = Liquid()
+        try:
+            api.get_orders()
+        except Exception as e:
+            self.assertEqual(type(e), ValueError)
+
+    def test_create_order_autherr(self):
+        api = Liquid()
+        try:
+            api.create_order(product_id=PRODUCT_ID_BTCJPY, side='Buy', price=0, quantity=MIN_ORDER_QUANTITY - 0.01)
+        except Exception as e:
+            self.assertEqual(type(e), ValueError)
+
+    def test_get_accounts_balance(self):
+        if self.api_key and self.api_secret:
+            res = self.api.get_accounts_balance()
+            self.assertEqual(type(res), list)
+            for b in res:
+                self.assertTrue('currency' in b)
+                self.assertTrue('balance' in b)
+        else:
+            print('skip test as API_KEY and API_SECRET are not defined')
