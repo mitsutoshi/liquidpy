@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 import freezegun
 import jwt
-from liquidpy.api import Liquid
+from liquidpy.api import Liquid, PRODUCT_ID_BTCJPY
 
 
 class TestApi(unittest.TestCase):
@@ -27,4 +27,16 @@ class TestApi(unittest.TestCase):
         self.assertEqual(headers['X-Quoine-Auth'], sign)
         self.assertEqual(headers['X-Quoine-API-Version'], '2')
         self.assertEqual(headers['Content-Type'], 'application/json')
+
+    def test_get_products(self):
+        res = self.api.get_products()
+        self.assertTrue(type(res) == list)
+        for p in res:
+            self.assertTrue('id' in p)
+
+    def test_get_product(self):
+        res = self.api.get_products(product_id=PRODUCT_ID_BTCJPY)
+        self.assertTrue(type(res) == dict)
+        self.assertTrue('id' in res)
+        self.assertEqual(int(res['id']), PRODUCT_ID_BTCJPY)
 

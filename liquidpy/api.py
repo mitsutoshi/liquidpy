@@ -26,6 +26,7 @@ class Liquid(object):
             raise ValueError('api_key and api_secret are required.')
         self.api_key = api_key
         self.api_secret = api_secret
+        self.session = requests.Session()
 
     def _create_auth_headers(self, path: str) -> dict:
         '''
@@ -52,14 +53,9 @@ class Liquid(object):
                 'Content-Type': 'application/json'
                 }
 
-    def get_products(self) -> Dict[str, Any]:
-        res = requests.get(BASE_URL + f'/products')
-        if not res.ok:
-            raise HTTPError(f'status: {res.status_code}, text: {res.text}')
-        return json.loads(res.text)
-
-    def get_product(self, product_id: int) -> Dict[str, Any]:
-        res = requests.get(BASE_URL + f'/products/{product_id}')
+    def get_products(self, product_id: int = 0) -> Dict[str, Any]:
+        path = '/products' + (f'/{product_id}' if product_id else '')
+        res = requests.get(BASE_URL + path)
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
