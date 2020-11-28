@@ -68,6 +68,9 @@ def privateapi(func):
 
 
 class Liquid(object):
+    '''
+    Liquid REST API Client
+    '''
 
     def __init__(self, api_key: str = None, api_secret: str = None):
         self.api_key = api_key
