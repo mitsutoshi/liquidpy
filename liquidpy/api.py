@@ -1,5 +1,5 @@
 from datetime import datetime
-from logging import getLogger, StreamHandler, Formatter, DEBUG, Logger
+from logging import getLogger, Logger
 from typing import Dict, Any, List
 import json
 import jwt
@@ -134,8 +134,8 @@ class Liquid(object):
         return json.loads(res.text)['models']
 
     @privateapi
-    def cancel_order(id: str) -> None:
-        path = f"/orders/{o['id']}/cancel"
+    def cancel_order(self, id: str) -> None:
+        path = f"/orders/{id}/cancel"
         res = self.s.put(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             logger.error(f'Failed to cancel order. [id={id}]')
@@ -143,21 +143,29 @@ class Liquid(object):
         logger.info(f'Order has been cancelled. [id={id}]')
 
     @privateapi
-    def create_order(self, product_id: int, side: str, price: int, quantity: float):
-        data = {
-                'order': {
-                    'order_type': 'limit',
-                    'product_id': product_id,
-                    'side': side,
-                    'price': price,
-                    'quantity': quantity
-                    }
+    def create_order(self, product_id: int, side: str, quantity: float, price: int = None) -> Dict[str, Any]:
+        order = {
+                'product_id': product_id,
+                'side': side,
+                'quantity': quantity
                 }
+        if price:
+            order.update({
+                'order_type': 'limit',
+                'price': price
+                })
+        else:
+            order.update({
+                'order_type': 'market'
+                })
+
         headers = self._create_auth_headers('/orders/')
         res = self.s.post(
-                BASE_URL + '/orders/', data=json.dumps(data), headers=headers)
+                BASE_URL + '/orders/', data=json.dumps({'order': order}), headers=headers)
         if not res.ok:
             logger.error(f'Failed to create an order. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
             raise HTTPError(f'status: {res.status_code}: text: {res.text}')
-        logger.info(f'Order has been created. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
+        body = json.loads(res.text)
+        logger.info(f"Order has been created. [order_id={body['id']}, product_id={product_id}, side={side}, price={price}, quantity={quantity}]")
+        return body
 

@@ -91,3 +91,26 @@ class TestApi(unittest.TestCase):
                 self.assertTrue('balance' in b)
         else:
             print('skip test as API_KEY and API_SECRET are not defined')
+
+    @unittest.skip("This test creates an order actually")
+    def test_create_order_limit(self):
+
+        # get a latest price
+        p = self.api.get_products(product_id=PRODUCT_ID_BTCJPY)
+
+        # set a price that is not executed
+        price = int(float(p['last_traded_price']) - 300000)
+
+        # create an order
+        res = self.api.create_order(
+                product_id=PRODUCT_ID_BTCJPY, side=SIDE_BUY, quantity=MIN_ORDER_QUANTITY, price=price)
+        self.assertIsNotNone(res['id'])
+        self.assertEqual(res['product_id'], PRODUCT_ID_BTCJPY)
+        self.assertEqual(res['order_type'], 'limit')
+        self.assertEqual(res['side'], SIDE_BUY)
+        self.assertEqual(int(res['price']), price)
+        self.assertEqual(res['quantity'], str(MIN_ORDER_QUANTITY))
+
+        # cancel an order
+        self.api.cancel_order(id=res['id'])
+
