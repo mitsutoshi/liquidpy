@@ -1,6 +1,6 @@
 # liquidpy
 
-liquidpy is the API library for trading cryptocurrency with the Liquid by Quoine.
+liquidpy is the Python library for trading cryptocurrency with the Liquid by Quoine.
 
 if you need detail information about Liquid's API, please see [Liquid official API document](https://developers.liquid.com/)
 
@@ -27,6 +27,9 @@ liquid = Liquid(api_key='xxx', api_secret='xxx')
 
 ```python
 products = liquid.get_products()
+for p in products:
+    print(p['product_id'])
+    print(p['currency_pair_code'])
 ```
 
 #### Get a product
@@ -34,7 +37,9 @@ products = liquid.get_products()
 `get_products` with product_id calls `/products/{product_id}`.
 
 ```python
-products = liquid.get_products(product_id=5)
+p = liquid.get_products(product_id=5)
+print(p['product_id'])          # 5
+print(p['currency_pair_code'])  # BTCJPY
 ```
 
 ### Private API 🔑
@@ -47,6 +52,9 @@ Private API reuqires to authenticate. If you call it without authentication, exc
 
 ```python
 accounts_balance = liquid.get_accounts_balnace()
+for b in accounts_balance:
+    print(b['currency'])
+    print(b['balance'])
 ```
 
 #### Get own orders
@@ -56,10 +64,37 @@ accounts_balance = liquid.get_accounts_balnace()
 
 #### Create an order
 
+Create an market type order.
+
+e.g.
+* product: 5 (BTCJPY)
+* side: buy
+* quantity: 0.01
+
 ```python
+from liquidpy.api import SIDE_BUY
+res = liquid.create_order(product_id=5, side=SIDE_BUY, quantity=0.01)
+print(f"order_id: {res['id']}")
+```
+
+Create an limit type order.
+
+e.g.
+* product: 5 (BTCJPY)
+* side: buy
+* price: 1000000
+* quantity: 0.01
+
+```python
+from liquidpy.api import SIDE_BUY
+res = liquid.create_order(product_id=5, side=SIDE_BUY, quantity=0.01, price=1000000)
+print(f"order_id: {res['id']}")
 ```
 
 #### Cancel an order
 
+Cancel an order of id=1234.
+
 ```python
+liquid.cancel_order(id=1234)
 ```
