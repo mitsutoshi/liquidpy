@@ -43,6 +43,22 @@ PRODUCT_ID_QASHJPY: int = 50
 """Product ID: QASH/JPY"""
 
 
+ORDER_STATUS_LIVE: str = 'live'
+"""Order status: live"""
+
+
+ORDER_STATUS_CANCELLED: str = 'cancelled'
+"""Order status: cancelled"""
+
+
+ORDER_STATUS_FILLED: str = 'filled'
+"""Order status: filled"""
+
+
+ORDER_STATUS_FILLED: str = 'partially_filled'
+"""Order status: partially_filled"""
+
+
 def privateapi(func):
     def wrapper(self, *args, **kwargs):
         if not self.api_key or not self.api_secret:
