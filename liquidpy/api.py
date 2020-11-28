@@ -1,10 +1,10 @@
 from datetime import datetime
+from logging import getLogger, StreamHandler, Formatter, DEBUG, Logger
+from typing import Dict, Any, List
 import json
 import jwt
 import requests
 from requests.exceptions import HTTPError
-
-from typing import Dict, Any, List
 
 
 BASE_URL: str = 'https://api.liquid.com'
@@ -59,6 +59,9 @@ ORDER_STATUS_FILLED: str = 'partially_filled'
 """Order status: partially_filled"""
 
 
+logger: Logger = getLogger(__name__)
+
+
 def privateapi(func):
     def wrapper(self, *args, **kwargs):
         if not self.api_key or not self.api_secret:
@@ -109,6 +112,7 @@ class Liquid(object):
         path = '/products' + (f'/{product_id}' if product_id else '')
         res = self.s.get(BASE_URL + path)
         if not res.ok:
+            logger.error(f'Failed to get products.')
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
@@ -117,6 +121,7 @@ class Liquid(object):
         path = '/accounts/balance'
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
+            logger.error(f'Failed to get accounts balance.')
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
@@ -133,7 +138,9 @@ class Liquid(object):
         path = f"/orders/{o['id']}/cancel"
         res = self.s.put(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
+            logger.error(f'Failed to cancel order. [id={id}]')
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
+        logger.info(f'Order has been cancelled. [id={id}]')
 
     @privateapi
     def create_order(self, product_id: int, side: str, price: int, quantity: float):
@@ -150,7 +157,7 @@ class Liquid(object):
         res = self.s.post(
                 BASE_URL + '/orders/', data=json.dumps(data), headers=headers)
         if not res.ok:
-            print(f'Failed to create an order. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
+            logger.error(f'Failed to create an order. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
             raise HTTPError(f'status: {res.status_code}: text: {res.text}')
-        print(f'Order has been created. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
+        logger.info(f'Order has been created. [product_id={product_id}, side={side}, price={price}, quantity={quantity}]')
 
