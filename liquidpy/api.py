@@ -11,6 +11,14 @@ BASE_URL: str = 'https://api.liquid.com'
 """API Base URL"""
 
 
+SIDE_BUY: str = 'buy'
+"""Side: buy"""
+
+
+SIDE_SELL: str = 'sell'
+"""Side: sell"""
+
+
 MIN_ORDER_QUANTITY: float = 0.001
 """minimum order quantity"""
 
