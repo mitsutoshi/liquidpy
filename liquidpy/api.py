@@ -126,7 +126,7 @@ class Liquid(object):
         return json.loads(res.text)
 
     @privateapi
-    def get_orders(self, status: str = None):
+    def get_orders(self, status: str = None) -> List[Dict[str, Any]]:
         path = '/orders' + (f'?status={status}' if status else "")
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:

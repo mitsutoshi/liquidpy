@@ -6,7 +6,7 @@ if you need detail information about Liquid's API, please see [Liquid official A
 
 ## Install
 
-```
+```sh
 pip install git+https://github.com/mitsutoshi/liquidpy#egg=liquidpy
 ```
 
@@ -60,16 +60,14 @@ for b in accounts_balance:
 #### Get own orders
 
 ```python
+orders = liquid.get_orders()
+for o in orders:
+    print(f"order_id: {o['id']}")
 ```
 
 #### Create an order
 
-Create an market type order.
-
-e.g.
-* product: 5 (BTCJPY)
-* side: buy
-* quantity: 0.01
+Create a market type order.
 
 ```python
 from liquidpy.api import SIDE_BUY
@@ -77,13 +75,7 @@ res = liquid.create_order(product_id=5, side=SIDE_BUY, quantity=0.01)
 print(f"order_id: {res['id']}")
 ```
 
-Create an limit type order.
-
-e.g.
-* product: 5 (BTCJPY)
-* side: buy
-* price: 1000000
-* quantity: 0.01
+Create a limit type order.
 
 ```python
 from liquidpy.api import SIDE_BUY
