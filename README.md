@@ -93,3 +93,21 @@ Cancel an order of id=1234.
 ```python
 liquid.cancel_order(id=1234)
 ```
+
+## Testing
+
+Tests are in `./tests` directory. Tests won't create new orders.
+
+### Run tests
+
+Run all tests.
+
+```
+pipenv run tests
+```
+
+Run all tests with verbose option.
+
+```
+pipenv run testsv
+```
