@@ -1,6 +1,7 @@
 # liquidpy
 
 ![.github/workflows/tests.yml](https://github.com/mitsutoshi/liquidpy/workflows/.github/workflows/tests.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 liquidpy is the Python library for trading cryptocurrency with the Liquid by Quoine.
 
