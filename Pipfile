@@ -12,3 +12,7 @@ pyjwt = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+tests = "python -m unittest"
+testsv = "python -m unittest -v"
