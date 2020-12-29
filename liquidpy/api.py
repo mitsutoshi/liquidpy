@@ -171,3 +171,8 @@ class Liquid(object):
         body = json.loads(res.text)
         logger.info(f"Order has been created. [order_id={body['id']}, product_id={product_id}, side={side}, price={price}, quantity={quantity}]")
         return body
+
+    @privateapi
+    def cancel_all_orders(self) -> None:
+        for o in self.get_orders(status=ORDER_STATUS_LIVE):
+            self.cancel_order(id=o['id'])
