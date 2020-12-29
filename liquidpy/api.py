@@ -144,6 +144,9 @@ class Liquid(object):
 
     @privateapi
     def create_order(self, product_id: int, side: str, quantity: float, price: int = None) -> Dict[str, Any]:
+        if quantity < MIN_ORDER_QUANTITY:
+            raise ValueError(f'Order quantity {quantity:.8f} is too small. Specify {MIN_ORDER_QUANTITY} or more.')
+
         order = {
                 'product_id': product_id,
                 'side': side,
@@ -168,4 +171,3 @@ class Liquid(object):
         body = json.loads(res.text)
         logger.info(f"Order has been created. [order_id={body['id']}, product_id={product_id}, side={side}, price={price}, quantity={quantity}]")
         return body
-

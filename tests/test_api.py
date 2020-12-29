@@ -92,6 +92,15 @@ class TestApi(unittest.TestCase):
         else:
             print('skip test as API_KEY and API_SECRET are not defined')
 
+    def test_create_order_quantityerr(self):
+        satoshi = 0.00000001
+        try:
+            self.api.create_order(
+                    product_id=PRODUCT_ID_BTCJPY, side=SIDE_BUY, quantity=MIN_ORDER_QUANTITY - satoshi, price=1)
+            self.fail('Exception has not occurred.')
+        except ValueError as e:
+            pass
+
     @unittest.skip("This test creates an order actually")
     def test_create_order_limit(self):
 
