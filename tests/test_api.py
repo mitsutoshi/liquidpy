@@ -123,3 +123,27 @@ class TestApi(unittest.TestCase):
         # cancel an order
         self.api.cancel_order(id=res['id'])
 
+    def test_get_fiat_deposits(self):
+        currency = 'JPY'
+        if self.api_key and self.api_secret:
+            res = self.api.get_fiat_deposits(currency=currency)
+            self.assertEqual(type(res), dict)
+            for m in res['models']:
+                if 'currency' in m:
+                    self.assertEqual(m['currency'], currency)
+                    self.assertGreater(float(m['amount']), 0)
+        else:
+            print('skip test as API_KEY and API_SECRET are not defined')
+
+    def test_get_fiat_deposits(self):
+        currency = 'JPY'
+        if self.api_key and self.api_secret:
+            res = self.api.get_fiat_deposits_history(currency=currency)
+            self.assertEqual(type(res), dict)
+            for m in res['models']:
+                if 'currency' in m:
+                    self.assertEqual(m['currency'], currency)
+                    self.assertGreater(float(m['net_amount']), 0)
+        else:
+            print('skip test as API_KEY and API_SECRET are not defined')
+

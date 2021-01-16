@@ -176,3 +176,21 @@ class Liquid(object):
     def cancel_all_orders(self) -> None:
         for o in self.get_orders(status=ORDER_STATUS_LIVE):
             self.cancel_order(id=o['id'])
+
+    @privateapi
+    def get_fiat_deposits(self, currency: str = 'JPY', page: int = 0) -> Dict[str, Any]:
+        path = f'/fund_infos?currency={currency}' + (f'&page={page}' if page else '')
+        res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
+        if not res.ok:
+            logger.error(f'Failed to get fiat deposits.')
+            raise HTTPError(f'status: {res.status_code}, text: {res.text}')
+        return json.loads(res.text)
+
+    @privateapi
+    def get_fiat_deposits_history(self, currency: str = 'JPY', page: int = 0) -> Dict[str, Any]:
+        path = f'/transactions?transaction_type=funding&currency={currency}' + (f'&page={page}' if page else '')
+        res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
+        if not res.ok:
+            logger.error(f'Failed to get fiat deposits history.')
+            raise HTTPError(f'status: {res.status_code}, text: {res.text}')
+        return json.loads(res.text)
