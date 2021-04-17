@@ -148,20 +148,22 @@ class TestApi(unittest.TestCase):
             print('skip test as API_KEY and API_SECRET are not defined')
 
     def test_get_executions_me(self):
-        limit = 1
-        page = 1
-        executions = self.api.get_executions_me(product_id=PRODUCT_ID_BTCJPY, page=page, limit=limit)
-        self.assertEqual(page, executions['current_page'])
-        self.assertEqual(limit, len(executions['models']))
+        if self.api_key and self.api_secret:
+            limit = 1
+            page = 1
+            executions = self.api.get_executions_me(product_id=PRODUCT_ID_BTCJPY, page=page, limit=limit)
+            self.assertEqual(page, executions['current_page'])
+            self.assertEqual(limit, len(executions['models']))
 
-        limit = 2
-        executions = self.api.get_executions_me(product_id=PRODUCT_ID_BTCJPY, page=page, limit=limit)
-        self.assertEqual(page, executions['current_page'])
-        self.assertEqual(limit, len(executions['models']))
+            limit = 2
+            executions = self.api.get_executions_me(product_id=PRODUCT_ID_BTCJPY, page=page, limit=limit)
+            self.assertEqual(page, executions['current_page'])
+            self.assertEqual(limit, len(executions['models']))
 
-        limit = 2
-        page = 2
-        executions = self.api.get_executions_me(product_id=PRODUCT_ID_BTCJPY, page=page, limit=limit)
-        self.assertEqual(page, executions['current_page'])
-        self.assertEqual(limit, len(executions['models']))
-
+            limit = 2
+            page = 2
+            executions = self.api.get_executions_me(product_id=PRODUCT_ID_BTCJPY, page=page, limit=limit)
+            self.assertEqual(page, executions['current_page'])
+            self.assertEqual(limit, len(executions['models']))
+        else:
+            print('skip test as API_KEY and API_SECRET are not defined')
