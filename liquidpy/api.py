@@ -194,3 +194,13 @@ class Liquid(object):
             logger.error(f'Failed to get fiat deposits history.')
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
+
+    @privateapi
+    def get_executions_me(self, product_id: str, timestamp: int = None, page: int = 1, limit: int = 200) -> List[Dict[str, Any]]:
+        path = f'/executions/me?product_id={product_id}&page={page}&limit={limit}' + (f'&timestamp={timestamp}' if timestamp else '')
+        res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
+        if not res.ok:
+            logger.error(f'Failed to get execution history.')
+            raise HTTPError(f'status: {res.status_code}, text: {res.text}')
+        return json.loads(res.text)
+
