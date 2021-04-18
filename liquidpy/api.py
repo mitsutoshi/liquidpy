@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from logging import getLogger, Logger
 from typing import Dict, Any, List
@@ -76,8 +77,8 @@ class Liquid(object):
     '''
 
     def __init__(self, api_key: str = None, api_secret: str = None):
-        self.api_key = api_key
-        self.api_secret = api_secret
+        self.api_key = api_key if api_key else os.getenv('LIQUID_API_KEY', '')
+        self.api_secret = api_secret if api_secret else os.getenv('LIQUID_API_SECRET', '')
         self.s = requests.Session()
 
     def __del__(self):

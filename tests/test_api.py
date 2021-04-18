@@ -9,9 +9,34 @@ from liquidpy.api import *
 class TestApi(unittest.TestCase):
 
     def setUp(self):
-        self.api_key = os.environ.get('API_KEY', '')
-        self.api_secret = os.environ.get('API_SECRET', '')
+        self.api_key = os.environ.get('LIQUID_API_KEY', '')
+        self.api_secret = os.environ.get('LIQUID_API_SECRET', '')
         self.api = Liquid(api_key=self.api_key, api_secret=self.api_secret)
+        self.api = Liquid()
+
+    def test_init(self):
+
+        apikey = 'apikey'
+        apisecret = 'apisecret'
+
+        # 1. env
+        os.environ['LIQUID_API_KEY'] = apikey
+        os.environ['LIQUID_API_SECRET'] = apisecret
+        lqd = Liquid()
+        self.assertEqual(os.getenv('LIQUID_API_KEY'), lqd.api_key)
+        self.assertEqual(os.getenv('LIQUID_API_SECRET'), lqd.api_secret)
+        del os.environ['LIQUID_API_KEY']
+        del os.environ['LIQUID_API_SECRET']
+
+        # 2. argument
+        lqd = Liquid(api_key=apikey, api_secret=apisecret)
+        self.assertEqual(apikey, lqd.api_key)
+        self.assertEqual(apisecret, lqd.api_secret)
+
+        # 3. not specified
+        lqd = Liquid()
+        self.assertEqual('', lqd.api_key)
+        self.assertEqual('', lqd.api_secret)
 
     @freezegun.freeze_time('2015-10-21 12:34:56')
     def test_create_auth_headers(self):
