@@ -151,7 +151,7 @@ class TestApi(unittest.TestCase):
     def test_get_fiat_deposits(self):
         currency = 'JPY'
         if self.api_key and self.api_secret:
-            res = self.api.get_fiat_deposits(currency=currency)
+            res = self.api.get_fiat_deposit_requests(currency=currency)
             self.assertEqual(type(res), dict)
             for m in res['models']:
                 if 'currency' in m:
@@ -160,7 +160,7 @@ class TestApi(unittest.TestCase):
         else:
             print('skip test as API_KEY and API_SECRET are not defined')
 
-    def test_get_fiat_deposits(self):
+    def test_get_fiat_deposits_history(self):
         currency = 'JPY'
         if self.api_key and self.api_secret:
             res = self.api.get_fiat_deposits_history(currency=currency)

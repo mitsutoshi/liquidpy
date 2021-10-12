@@ -179,17 +179,19 @@ class Liquid(object):
             self.cancel_order(id=o['id'])
 
     @privateapi
-    def get_fiat_deposits(self, currency: str = 'JPY', page: int = 0) -> Dict[str, Any]:
-        path = f'/fund_infos?currency={currency}' + (f'&page={page}' if page else '')
+    def get_fiat_deposit_requests(self, currency: str = 'JPY') -> Dict[str, Any]:
+        path = f'/fund_infos?currency={currency}'
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
-            logger.error(f'Failed to get fiat deposits.')
+            logger.error(f'Failed to get fiat deposit requests.')
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')
         return json.loads(res.text)
 
     @privateapi
-    def get_fiat_deposits_history(self, currency: str = 'JPY', page: int = 0) -> Dict[str, Any]:
-        path = f'/transactions?transaction_type=funding&currency={currency}' + (f'&page={page}' if page else '')
+    def get_fiat_deposits_history(self, currency: str = 'JPY', page: int = 0, limit: int = 20) -> Dict[str, Any]:
+        path = f'/transactions?transaction_type=funding&currency={currency}'
+        path += f'&page={page}' if page else ''
+        path += f'&limit={limit}' if limit else ''
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             logger.error(f'Failed to get fiat deposits history.')
