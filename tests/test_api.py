@@ -103,7 +103,8 @@ class TestApi(unittest.TestCase):
     def test_create_order_autherr(self):
         api = Liquid()
         try:
-            api.create_order(product_id=PRODUCT_ID_BTCJPY, side='Buy', price=0, quantity=MIN_ORDER_QUANTITY - 0.01)
+            pid = PRODUCT_ID_BTCJPY
+            api.create_order(product_id=pid, side='Buy', price=0, quantity=MIN_ORDER_QUANTITY[pid] - 0.01)
         except Exception as e:
             self.assertEqual(type(e), ValueError)
 
@@ -120,8 +121,9 @@ class TestApi(unittest.TestCase):
     def test_create_order_quantityerr(self):
         satoshi = 0.00000001
         try:
+            pid = PRODUCT_ID_BTCJPY
             self.api.create_order(
-                    product_id=PRODUCT_ID_BTCJPY, side=SIDE_BUY, quantity=MIN_ORDER_QUANTITY - satoshi, price=1)
+                    product_id=pid, side=SIDE_BUY, quantity=MIN_ORDER_QUANTITY[pid] - satoshi, price=1)
             self.fail('Exception has not occurred.')
         except ValueError as e:
             pass
@@ -136,14 +138,15 @@ class TestApi(unittest.TestCase):
         price = int(float(p['last_traded_price']) - 300000)
 
         # create an order
+        pid = PRODUCT_ID_BTCJPY
         res = self.api.create_order(
-                product_id=PRODUCT_ID_BTCJPY, side=SIDE_BUY, quantity=MIN_ORDER_QUANTITY, price=price)
+                product_id=pid, side=SIDE_BUY, quantity=MIN_ORDER_QUANTITY[pid], price=price)
         self.assertIsNotNone(res['id'])
         self.assertEqual(res['product_id'], PRODUCT_ID_BTCJPY)
         self.assertEqual(res['order_type'], 'limit')
         self.assertEqual(res['side'], SIDE_BUY)
         self.assertEqual(int(res['price']), price)
-        self.assertEqual(res['quantity'], str(MIN_ORDER_QUANTITY))
+        self.assertEqual(res['quantity'], str(MIN_ORDER_QUANTITY[pid]))
 
         # cancel an order
         self.api.cancel_order(id=res['id'])

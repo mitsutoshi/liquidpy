@@ -20,10 +20,6 @@ SIDE_SELL: str = 'sell'
 """Side: sell"""
 
 
-MIN_ORDER_QUANTITY: float = 0.001
-"""minimum order quantity"""
-
-
 PRODUCT_ID_BTCJPY: int = 5
 """Product ID: BTC/JPY"""
 
@@ -42,6 +38,16 @@ PRODUCT_ID_BCHJPY: int = 41
 
 PRODUCT_ID_QASHJPY: int = 50
 """Product ID: QASH/JPY"""
+
+
+MIN_ORDER_QUANTITY: Dict[int, float] = {
+        PRODUCT_ID_BTCJPY: 0.0001,
+        PRODUCT_ID_ETHJPY: 0.002,
+        PRODUCT_ID_BCHJPY: 0.01,
+        PRODUCT_ID_QASHJPY: 1,
+        PRODUCT_ID_XRPJPY: 1
+        }
+"""minimum order quantity"""
 
 
 ORDER_STATUS_LIVE: str = 'live'
@@ -145,8 +151,11 @@ class Liquid(object):
 
     @privateapi
     def create_order(self, product_id: int, side: str, quantity: float, price: int = None) -> Dict[str, Any]:
-        if quantity < MIN_ORDER_QUANTITY:
-            raise ValueError(f'Order quantity {quantity:.8f} is too small. Specify {MIN_ORDER_QUANTITY} or more.')
+        if product_id not in MIN_ORDER_QUANTITY:
+            raise ValueError(f'Invalid product_id. [{product_id}]')
+
+        if quantity < MIN_ORDER_QUANTITY[product_id]:
+            raise ValueError(f'Order quantity {quantity:.8f} is too small. Specify {MIN_ORDER_QUANTITY[product_id]} or more.')
 
         order = {
                 'product_id': product_id,
