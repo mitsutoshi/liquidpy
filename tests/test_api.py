@@ -198,43 +198,47 @@ class TestApi(unittest.TestCase):
 
     def test_get_orders(self):
 
-        # status, side, funding_currency, product_id
-        pattern = [
-                (ORDER_STATUS_LIVE, None, None, None),
-                (ORDER_STATUS_LIVE, SIDE_BUY, None, None),
-                (ORDER_STATUS_LIVE, SIDE_SELL, None, None),
-                (ORDER_STATUS_FILLED, None, None, None),
-                (ORDER_STATUS_CANCELLED, None, None, None),
-                (None, None, FUNDING_CURRENCY_USD, None),
-                (None, None, FUNDING_CURRENCY_JPY, None),
-                (PRODUCT_ID_BTCJPY, None, None, None),
-                (PRODUCT_ID_SOLJPY, None, None, None),
-                ]
+        if self.api_key and self.api_secret:
 
-        api = Liquid()
+            # status, side, funding_currency, product_id
+            pattern = [
+                    (ORDER_STATUS_LIVE, None, None, None),
+                    (ORDER_STATUS_LIVE, SIDE_BUY, None, None),
+                    (ORDER_STATUS_LIVE, SIDE_SELL, None, None),
+                    (ORDER_STATUS_FILLED, None, None, None),
+                    (ORDER_STATUS_CANCELLED, None, None, None),
+                    (None, None, FUNDING_CURRENCY_USD, None),
+                    (None, None, FUNDING_CURRENCY_JPY, None),
+                    (PRODUCT_ID_BTCJPY, None, None, None),
+                    (PRODUCT_ID_SOLJPY, None, None, None),
+                    ]
 
-        for status, side, funding_currency, product_id in pattern:
+            api = Liquid()
 
-            orders = api.get_orders(
-                    status=status,
-                    side=side,
-                    funding_currency=funding_currency,
-                    product_id=product_id)
+            for status, side, funding_currency, product_id in pattern:
 
-            for o in orders:
+                orders = api.get_orders(
+                        status=status,
+                        side=side,
+                        funding_currency=funding_currency,
+                        product_id=product_id)
 
-                # check status and side
-                if status == ORDER_STATUS_LIVE:
-                    self.assertEqual(o['status'], status)
-                    self.assertEqual(o['side'], status)
-                elif status == ORDER_STATUS_FILLED:
-                    self.assertEqual(o['status'], status)
-                elif status == ORDER_STATUS_CANCELLED:
-                    self.assertEqual(o['status'], status)
+                for o in orders:
 
-                # check funding currency
-                if funding_currency:
-                    self.assertEqual(o['funding_currency'], funding_currency)
+                    # check status and side
+                    if status == ORDER_STATUS_LIVE:
+                        self.assertEqual(o['status'], status)
+                        self.assertEqual(o['side'], status)
+                    elif status == ORDER_STATUS_FILLED:
+                        self.assertEqual(o['status'], status)
+                    elif status == ORDER_STATUS_CANCELLED:
+                        self.assertEqual(o['status'], status)
 
-                if product_id:
-                    self.assertEqual(o['product_id'], product_id)
+                    # check funding currency
+                    if funding_currency:
+                        self.assertEqual(o['funding_currency'], funding_currency)
+
+                    if product_id:
+                        self.assertEqual(o['product_id'], product_id)
+        else:
+            print('skip test as API_KEY and API_SECRET are not defined')
