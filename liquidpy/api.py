@@ -155,7 +155,8 @@ class Liquid(object):
             self,
             status: str = None,
             side: str = None,
-            funding_currency: str = None) -> List[Dict[str, Any]]:
+            funding_currency: str = None,
+            product_id: int = None) -> List[Dict[str, Any]]:
         path = '/orders'
         qs = []
         if status:
@@ -164,8 +165,9 @@ class Liquid(object):
             qs.append(f'side={side}')
         if funding_currency:
             qs.append(f'funding_currency={funding_currency}')
+        if product_id:
+            qs.append(f'product_id={product_id}')
         path += '?' + ('&'.join(qs) if qs else '')
-        print(path)
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')

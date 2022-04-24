@@ -198,23 +198,28 @@ class TestApi(unittest.TestCase):
 
     def test_get_orders(self):
 
-        # status, side, funding_currency
+        # status, side, funding_currency, product_id
         pattern = [
-                (ORDER_STATUS_LIVE, None, None),
-                (ORDER_STATUS_LIVE, SIDE_BUY, None),
-                (ORDER_STATUS_LIVE, SIDE_SELL, None),
-                (ORDER_STATUS_FILLED, None, None),
-                (ORDER_STATUS_CANCELLED, None, None),
-                (None, None, FUNDING_CURRENCY_USD),
-                (None, None, FUNDING_CURRENCY_JPY),
+                (ORDER_STATUS_LIVE, None, None, None),
+                (ORDER_STATUS_LIVE, SIDE_BUY, None, None),
+                (ORDER_STATUS_LIVE, SIDE_SELL, None, None),
+                (ORDER_STATUS_FILLED, None, None, None),
+                (ORDER_STATUS_CANCELLED, None, None, None),
+                (None, None, FUNDING_CURRENCY_USD, None),
+                (None, None, FUNDING_CURRENCY_JPY, None),
+                (PRODUCT_ID_BTCJPY, None, None, None),
+                (PRODUCT_ID_SOLJPY, None, None, None),
                 ]
 
         api = Liquid()
 
-        for status, side, funding_currency in pattern:
+        for status, side, funding_currency, product_id in pattern:
 
             orders = api.get_orders(
-                    status=status, side=side, funding_currency=funding_currency)
+                    status=status,
+                    side=side,
+                    funding_currency=funding_currency,
+                    product_id=product_id)
 
             for o in orders:
 
@@ -231,3 +236,5 @@ class TestApi(unittest.TestCase):
                 if funding_currency:
                     self.assertEqual(o['funding_currency'], funding_currency)
 
+                if product_id:
+                    self.assertEqual(o['product_id'], product_id)
