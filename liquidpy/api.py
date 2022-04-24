@@ -40,12 +40,22 @@ PRODUCT_ID_QASHJPY: int = 50
 """Product ID: QASH/JPY"""
 
 
+PRODUCT_ID_SOLJPY: int = 855
+"""Product ID: SOL/JPY"""
+
+
+PRODUCT_ID_FTTJPY: int = 856
+"""Product ID: FTT/JPY"""
+
+
 MIN_ORDER_QUANTITY: Dict[int, float] = {
         PRODUCT_ID_BTCJPY: 0.0001,
         PRODUCT_ID_ETHJPY: 0.002,
         PRODUCT_ID_BCHJPY: 0.01,
         PRODUCT_ID_QASHJPY: 1,
-        PRODUCT_ID_XRPJPY: 1
+        PRODUCT_ID_XRPJPY: 1,
+        PRODUCT_ID_SOLJPY: 0.1,
+        PRODUCT_ID_FTTJPY: 0.1,
         }
 """minimum order quantity"""
 
