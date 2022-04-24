@@ -66,6 +66,14 @@ ORDER_STATUS_FILLED: str = 'partially_filled'
 """Order status: partially_filled"""
 
 
+FUNDING_CURRENCY_USD: str = 'USD'
+"""Funding currency: USD"""
+
+
+FUNDING_CURRENCY_JPY: str = 'JPY'
+"""Funding currency: JPY"""
+
+
 logger: Logger = getLogger(__name__)
 
 
@@ -133,8 +141,21 @@ class Liquid(object):
         return json.loads(res.text)
 
     @privateapi
-    def get_orders(self, status: str = None) -> List[Dict[str, Any]]:
-        path = '/orders' + (f'?status={status}' if status else "")
+    def get_orders(
+            self,
+            status: str = None,
+            side: str = None,
+            funding_currency: str = None) -> List[Dict[str, Any]]:
+        path = '/orders'
+        qs = []
+        if status:
+            qs.append(f'status={status}')
+        if side:
+            qs.append(f'side={side}')
+        if funding_currency:
+            qs.append(f'funding_currency={funding_currency}')
+        path += '?' + ('&'.join(qs) if qs else '')
+        print(path)
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
             raise HTTPError(f'status: {res.status_code}, text: {res.text}')

@@ -195,3 +195,39 @@ class TestApi(unittest.TestCase):
             self.assertEqual(limit, len(executions['models']))
         else:
             print('skip test as API_KEY and API_SECRET are not defined')
+
+    def test_get_orders(self):
+
+        # status, side, funding_currency
+        pattern = [
+                (ORDER_STATUS_LIVE, None, None),
+                (ORDER_STATUS_LIVE, SIDE_BUY, None),
+                (ORDER_STATUS_LIVE, SIDE_SELL, None),
+                (ORDER_STATUS_FILLED, None, None),
+                (ORDER_STATUS_CANCELLED, None, None),
+                (None, None, FUNDING_CURRENCY_USD),
+                (None, None, FUNDING_CURRENCY_JPY),
+                ]
+
+        api = Liquid()
+
+        for status, side, funding_currency in pattern:
+
+            orders = api.get_orders(
+                    status=status, side=side, funding_currency=funding_currency)
+
+            for o in orders:
+
+                # check status and side
+                if status == ORDER_STATUS_LIVE:
+                    self.assertEqual(o['status'], status)
+                    self.assertEqual(o['side'], status)
+                elif status == ORDER_STATUS_FILLED:
+                    self.assertEqual(o['status'], status)
+                elif status == ORDER_STATUS_CANCELLED:
+                    self.assertEqual(o['status'], status)
+
+                # check funding currency
+                if funding_currency:
+                    self.assertEqual(o['funding_currency'], funding_currency)
+
