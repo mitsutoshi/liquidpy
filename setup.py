@@ -12,7 +12,7 @@ def _requires_from_file(filename):
 
 setup(
     name="liquidpy",
-    version="1.4.3",
+    version="1.4.4",
     license="MIT",
     description="Cryptocurrency trading library for LIQUID BY QUOINE.",
     author="mitsutoshi",
