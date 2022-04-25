@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from logging import getLogger, Logger
-from typing import Dict, Any, List
+from typing import Any
 import json
 import jwt
 import requests
@@ -48,7 +48,7 @@ PRODUCT_ID_FTTJPY: int = 856
 """Product ID: FTT/JPY"""
 
 
-MIN_ORDER_QUANTITY: Dict[int, float] = {
+MIN_ORDER_QUANTITY: dict[int, float] = {
         PRODUCT_ID_BTCJPY: 0.0001,
         PRODUCT_ID_ETHJPY: 0.002,
         PRODUCT_ID_BCHJPY: 0.01,
@@ -133,7 +133,7 @@ class Liquid(object):
                 'Content-Type': 'application/json'
                 }
 
-    def get_products(self, product_id: int = 0) -> Dict[str, Any]:
+    def get_products(self, product_id: int = 0) -> dict[str, Any]:
         path = '/products' + (f'/{product_id}' if product_id else '')
         res = self.s.get(BASE_URL + path)
         if not res.ok:
@@ -142,7 +142,7 @@ class Liquid(object):
         return json.loads(res.text)
 
     @privateapi
-    def get_accounts_balance(self) -> Dict[str, Any]:
+    def get_accounts_balance(self) -> dict[str, Any]:
         path = '/accounts/balance'
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
@@ -156,7 +156,7 @@ class Liquid(object):
             status: str = None,
             side: str = None,
             funding_currency: str = None,
-            product_id: int = None) -> List[Dict[str, Any]]:
+            product_id: int = None) -> list[dict[str, Any]]:
         path = '/orders'
         qs = []
         if status:
@@ -183,7 +183,7 @@ class Liquid(object):
         logger.info(f'Order has been cancelled. [id={id}]')
 
     @privateapi
-    def create_order(self, product_id: int, side: str, quantity: float, price: int = None) -> Dict[str, Any]:
+    def create_order(self, product_id: int, side: str, quantity: float, price: int = None) -> dict[str, Any]:
         if product_id not in MIN_ORDER_QUANTITY:
             raise ValueError(f'Invalid product_id. [{product_id}]')
 
@@ -221,7 +221,7 @@ class Liquid(object):
             self.cancel_order(id=o['id'])
 
     @privateapi
-    def get_fiat_deposit_requests(self, currency: str = 'JPY') -> Dict[str, Any]:
+    def get_fiat_deposit_requests(self, currency: str = 'JPY') -> dict[str, Any]:
         path = f'/fund_infos?currency={currency}'
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
@@ -230,7 +230,7 @@ class Liquid(object):
         return json.loads(res.text)
 
     @privateapi
-    def get_fiat_deposits_history(self, currency: str = 'JPY', page: int = 0, limit: int = 20) -> Dict[str, Any]:
+    def get_fiat_deposits_history(self, currency: str = 'JPY', page: int = 0, limit: int = 20) -> dict[str, Any]:
         path = f'/transactions?transaction_type=funding&currency={currency}'
         path += f'&page={page}' if page else ''
         path += f'&limit={limit}' if limit else ''
@@ -241,7 +241,7 @@ class Liquid(object):
         return json.loads(res.text)
 
     @privateapi
-    def get_executions_me(self, product_id: str, timestamp: int = None, page: int = 1, limit: int = 200) -> List[Dict[str, Any]]:
+    def get_executions_me(self, product_id: str, timestamp: int = None, page: int = 1, limit: int = 200) -> list[dict[str, Any]]:
         path = f'/executions/me?product_id={product_id}&page={page}&limit={limit}' + (f'&timestamp={timestamp}' if timestamp else '')
         res = self.s.get(BASE_URL + path, headers=self._create_auth_headers(path))
         if not res.ok:
