@@ -12,9 +12,9 @@ def _requires_from_file(filename):
 
 setup(
     name="liquidpy",
-    version="1.4.4",
+    version="1.5.0",
     license="MIT",
-    description="Cryptocurrency trading library for LIQUID BY QUOINE.",
+    description="Cryptocurrency trading library for Liquid by FTX.",
     author="mitsutoshi",
     url="https://github.com/mitsutoshi/liquidpy",
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),

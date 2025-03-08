@@ -111,3 +111,17 @@ Run all tests with verbose option.
 ```
 pipenv run testsv
 ```
+
+Public
+|Endpoint|Method|
+|---|---|
+|GET /products|get_products|
+|GET /products/{product_id}|get_products(product_id)|
+
+Private
+|Endpoint|Method|
+|---|---|
+|GET /accounts/balance|get_accounts_balance|
+|GET /orders|get_orders|
+|POST /orders/{id}/cancel|cancel_order|
+|POST /orders/|create_order|
